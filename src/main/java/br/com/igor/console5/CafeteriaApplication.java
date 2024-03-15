@@ -11,10 +11,10 @@ import java.util.Optional;
 import java.util.Scanner;
 
 @SpringBootApplication
-public class Console5Application implements CommandLineRunner {
+public class CafeteriaApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
-        SpringApplication.run(Console5Application.class, args);
+        SpringApplication.run(CafeteriaApplication.class, args);
     }
 
     @Autowired
@@ -22,7 +22,6 @@ public class Console5Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // código gliphy
         System.out.println("=================================================");
         System.out.println("****  BEM VINDO AO SISTEMA DA SUA CAFETERIA  ****");
         System.out.println("=================================================");
@@ -32,7 +31,8 @@ public class Console5Application implements CommandLineRunner {
             System.out.println("1. ADICIONAR UM PRODUTO");
             System.out.println("2. LISTAR OS PRODUTOS");
             System.out.println("3. DELETAR UM PRODUTO");
-            System.out.println("4. SAIR");
+            System.out.println("4. ALTERAR UM PRODUTO");
+            System.out.println("5. SAIR");
             System.out.println("================================================");
             System.out.print("DIGITE A SUA OPÇÃO DESEJADA: ");
             int opcao = Integer.parseInt(teclado.nextLine());
@@ -64,7 +64,7 @@ public class Console5Application implements CommandLineRunner {
             } else if (opcao == 3) { // Deletar os produtos
                 System.out.println("================================================");
                 System.out.println("DELETAR UM PRODUTO");
-                System.out.println("DIGITE O CÓDIGO DO PRODUTO QUE DESEJA EXCLUIR");
+                System.out.println("DIGITE O CÓDIGO DO PRODUTO QUE DESEJA DELETAR");
                 Long id = Long.parseLong(teclado.nextLine());
 
                 Optional<Produto> produtoOptional = produtoRepository.findById(id);
@@ -76,12 +76,61 @@ public class Console5Application implements CommandLineRunner {
                     System.out.println(" O PRODUTO INFORMADO NÃO FOI ENCONTRADO");
                 }
 
-            } else if (opcao == 4) { // Sair
+
+            } else if (opcao == 4) { // Alterar um produto
+                System.out.println("================================================");
+                System.out.println("DIGITE O CÓDIGO DO PRODUTO QUE VOCÊ DESEJA ALTERAR");
+                Long id = Long.parseLong(teclado.nextLine());
+
+                Optional<Produto> produtoOptional = produtoRepository.findById(id);
+                if (produtoOptional.isPresent()) {
+                    Produto produto = produtoOptional.get();
+
+                    boolean alterando = true;
+                    while (alterando) {
+                        System.out.println("SELECIONE O QUE DESEJA ALTERAR:");
+                        System.out.println("1. NOME (ATUAL: " + produto.getNome() + ")");
+                        System.out.println("2. DESCRIÇÃO (ATUAL: " + produto.getDescricao() + ")");
+                        System.out.println("3. PREÇO (ATUAL: " + produto.getPreco() + ")");
+                        System.out.println("4. VOLTAR AO MENU PRINCIPAL");
+
+                        int escolha = Integer.parseInt(teclado.nextLine());
+                        if (escolha == 1) {
+                            System.out.println("DIGITE O NOME DO NOVO PRODUTO");
+                            String novoNome = teclado.nextLine();
+                            produto.setNome(novoNome);
+                        } else if (escolha == 2) {
+                            System.out.println("DIGITE A NOVA DESCRIÇÃO PARA O PRODUTO");
+                            String novaDescricao = teclado.nextLine();
+                            produto.setDescricao(novaDescricao);
+                        } else if (escolha == 3) {
+                            System.out.println("DIGITE O NOVO PREÇO PARA O PRODUTO");
+                            float novoPreco = Float.parseFloat(teclado.nextLine());
+                            produto.setPreco(novoPreco);
+                        } else if (escolha == 4) {
+                            alterando = false;
+
+                        } else {
+                            System.out.println(" OPÇÃO INVALIDA, POR FAVOR, ESCOLHA UMA OPÇÃO VÁLIDA");
+
+                        }
+
+
+                    }
+                    produtoRepository.save(produto);
+                    System.out.println(" PRODUTO FOI ALTERADO COM SUCESSO");
+
+                } else {
+                    System.out.println(" O PRODUTO INFORMADO NÃO FOI ENCONTRADO!");
+                }
+
+
+            } else if (opcao == 5) { // Sair
                 System.out.println("================================================");
                 System.out.println("SAINDO DO SISTEMA");
                 break; // Sai do while
 
-            }else {
+            } else {
                 System.out.println("================================================");
                 System.out.println("OPÇÃO INVALIDA!! \nPOR FAVOR SELECIONE UMA OPÇÃO VÁLIDA!!");
             }
