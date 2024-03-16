@@ -1,6 +1,8 @@
 package br.com.igor.console5;
 
+import br.com.igor.console5.entidades.Cliente;
 import br.com.igor.console5.entidades.Produto;
+import br.com.igor.console5.repositorios.ClienteRepository;
 import br.com.igor.console5.repositorios.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -19,6 +21,8 @@ public class CafeteriaApplication implements CommandLineRunner {
 
     @Autowired
     private ProdutoRepository produtoRepository;
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -32,7 +36,13 @@ public class CafeteriaApplication implements CommandLineRunner {
             System.out.println("2. LISTAR OS PRODUTOS");
             System.out.println("3. DELETAR UM PRODUTO");
             System.out.println("4. ALTERAR UM PRODUTO");
-            System.out.println("5. SAIR");
+            System.out.println("================================================");
+            System.out.println("\n MENU DO BANCO DE DADOS ");
+            System.out.println("5. ADICIONAR UM CLIENTE");
+            System.out.println("6. LISTAR OS CLIENTES");
+            System.out.println("7. DELETAR UM CLIENTE");
+            System.out.println("\n================================================");
+            System.out.println("8. SAIR DO SISTEMA");
             System.out.println("================================================");
             System.out.print("DIGITE A SUA OPÇÃO DESEJADA: ");
             int opcao = Integer.parseInt(teclado.nextLine());
@@ -125,7 +135,49 @@ public class CafeteriaApplication implements CommandLineRunner {
                 }
 
 
-            } else if (opcao == 5) { // Sair
+            } else if (opcao == 5) {//ADICIONAR NO BANCO DE DADOS
+                System.out.println("================================================");
+                System.out.println("ADICIONAR UM CLINE");
+                System.out.println("DIGITE O NOME DO CLIENTE");
+                String nomeCliente = teclado.nextLine();
+                System.out.println("DIGITE O ENDEREÇO DO CLIENTE");
+                String endereco = teclado.nextLine();
+                System.out.println("DIGITE O TELEFONE DO CLIENTE");
+                String telefone = teclado.nextLine();
+                System.out.println("DIGITE O INSTAGRAM DO CLIENTE");
+                String instagram = teclado.nextLine();
+
+                Cliente novo = new Cliente();
+                novo.setEndereco(endereco);
+                novo.setNomeCliente(nomeCliente);
+                novo.setTelefone(telefone);
+                novo.setInstragram(instagram);
+
+                clienteRepository.save(novo);
+
+
+            } else if (opcao == 6) {
+                System.out.println("================================================");
+                System.out.println("LISTAR OS PRODUTOS");
+                for (Cliente c : clienteRepository.findAll()) {
+                    System.out.println(c.getId() + "," + c.getNomeCliente() + ", " + c.getEndereco() + ", " + c.getTelefone() + ", " + c.getInstragram());
+                }
+            } else if (opcao == 7) {
+                System.out.println("================================================");
+                System.out.println("DELETAR UM CLIENTE");
+                System.out.println("DIGITE O ID DO CLIENTE QUE DESEJA DELETAR");
+                Long id = Long.parseLong(teclado.nextLine());
+
+                Optional<Cliente> clienteOptional = clienteRepository.findById(id);
+                if (clienteOptional.isPresent()) {
+                    clienteRepository.delete(clienteOptional.get());
+                    System.out.println(" O CLIENTE INFORMADO FOI DELETADO COM SUCESSO");
+
+                } else {
+                    System.out.println(" O CLIENTE INFORMADO NÃO FOI ENCONTRADO");
+
+                }
+            } else if (opcao == 8) { // Sair
                 System.out.println("================================================");
                 System.out.println("SAINDO DO SISTEMA");
                 break; // Sai do while
